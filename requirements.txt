@@ -1,0 +1,8 @@
+pyspark==3.5.1
+delta-spark==3.2.0
+confluent-kafka==2.5.3
+snowflake-connector-python==3.12.2
+apache-airflow==2.9.3
+great-expectations==0.18.19
+pytest==8.3.3
+python-dotenv==1.0.1
