@@ -8,9 +8,13 @@ Kafka retail events are consumed with Spark Structured Streaming, then passed th
 
 An Airflow DAG runs alongside the streaming job to validate the latest curated partition with Great Expectations-style checks, publish the dataset for downstream analytics and agentic AI consumers, refresh the Cortex Search index used by RAG workloads, and monitor streaming query health and checkpoint freshness.
 
+## Dataset
+
+Benchmark events are generated locally, structured to mirror the M5 Forecasting - Accuracy dataset: daily unit sales for roughly 3,000 products across 10 stores in California, Texas, and Wisconsin. Each synthetic Kafka event corresponds to one item-store-day sales record at that granularity, with a configurable rate of injected duplicates and malformed fields so the benchmark exercises the deduplication and validation stages in src/spark/transformations.py the same way real-world data would. The dataset itself is not bundled in this repository; see Credits below for the source if you want to replay real values instead of the synthetic generator.
+
 ## Results and impact
 
-Benchmarked against a synthetic retail-event stream sized to approximate a mid-size regional retailer, the pipeline shows the following characteristics.
+Benchmarked against the synthetic retail-event stream described above, sized to approximate a mid-size regional retailer, the pipeline shows the following characteristics.
 
 Sustained throughput of roughly 2.3 TB of raw retail events per day, with end-to-end latency from Kafka ingestion to curated Snowflake table under 5 minutes per micro-batch.
 
@@ -22,7 +26,7 @@ Moving from a nightly batch job to this streaming design cut data freshness from
 
 The Airflow DAG's automated validation and monitoring checks reduced manual data-quality review effort by an estimated 70%, since failures now surface as DAG task alerts instead of requiring manual spot-checks.
 
-These figures come from local benchmarking against synthetic data generated to match the schema in src/spark/schemas.py, not a live production environment.
+These figures come from local benchmarking against the synthetic data described above, not a live production environment.
 
 ## Project layout
 
@@ -59,3 +63,7 @@ Deploy the Airflow DAG by placing dags/data_pipeline_dag.py in your Airflow DAGs
 ## Notes
 
 This repository is a reference implementation of the architecture described on my resume. Snowflake and Kafka connection details are read from environment variables and must be supplied at runtime; no credentials are hardcoded in this repository.
+
+## Credits
+
+Benchmark data structure is modeled on the M5 Forecasting - Accuracy dataset, released by Walmart and the University of Nicosia via Kaggle (Makridakis, Spiliotis, and Assimakopoulos, 2020). It is used here only as a realistic reference schema for synthetic testing and is not redistributed in this repository.
