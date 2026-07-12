@@ -10,7 +10,7 @@ An Airflow DAG runs alongside the streaming job to validate the latest curated p
 
 ## Dataset
 
-Benchmark events are generated locally, structured to mirror the M5 Forecasting - Accuracy dataset: daily unit sales for roughly 3,000 products across 10 stores in California, Texas, and Wisconsin. Each synthetic Kafka event corresponds to one item-store-day sales record at that granularity, with a configurable rate of injected duplicates and malformed fields so the benchmark exercises the deduplication and validation stages in src/spark/transformations.py the same way real-world data would. The dataset itself is not bundled in this repository; see Credits below for the source if you want to replay real values instead of the synthetic generator.
+Benchmark events are generated locally, structured to mirror the [M5 Forecasting - Accuracy dataset](https://www.kaggle.com/competitions/m5-forecasting-accuracy): daily unit sales for roughly 3,000 products across 10 stores in California, Texas, and Wisconsin. Each synthetic Kafka event corresponds to one item-store-day sales record at that granularity, with a configurable rate of injected duplicates and malformed fields so the benchmark exercises the deduplication and validation stages in src/spark/transformations.py the same way real-world data would. The dataset itself is not bundled in this repository; see Credits below for the source if you want to replay real values instead of the synthetic generator.
 
 ## Results and impact
 
@@ -60,10 +60,14 @@ docker build -t ghcr.io/rethickvis/distributed-ai-data-pipeline:latest .
 
 Deploy the Airflow DAG by placing dags/data_pipeline_dag.py in your Airflow DAGs folder.
 
+## Related project
+
+See [multi-agent-ops-intelligence](https://github.com/rethickvis/multi-agent-ops-intelligence) for the downstream multi-agent platform that consumes the curated datasets produced by this pipeline.
+
 ## Notes
 
 This repository is a reference implementation of the architecture described on my resume. Snowflake and Kafka connection details are read from environment variables and must be supplied at runtime; no credentials are hardcoded in this repository.
 
 ## Credits
 
-Benchmark data structure is modeled on the M5 Forecasting - Accuracy dataset, released by Walmart and the University of Nicosia via Kaggle (Makridakis, Spiliotis, and Assimakopoulos, 2020). It is used here only as a realistic reference schema for synthetic testing and is not redistributed in this repository.
+Benchmark data structure is modeled on the [M5 Forecasting - Accuracy dataset](https://www.kaggle.com/competitions/m5-forecasting-accuracy), released by Walmart and the University of Nicosia via Kaggle (Makridakis, Spiliotis, and Assimakopoulos, 2020). It is used here only as a realistic reference schema for synthetic testing and is not redistributed in this repository.
